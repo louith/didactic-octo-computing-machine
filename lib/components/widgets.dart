@@ -209,6 +209,27 @@ Container addImage(BuildContext context, String label) {
   );
 }
 
+Container salonHomeCard(String cardLabel, Widget widget) {
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(defaultPadding),
+    decoration: const BoxDecoration(
+        color: kPrimaryLightColor,
+        borderRadius: BorderRadius.all(Radius.circular(10))),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          cardLabel,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: defaultPadding),
+        widget,
+      ],
+    ),
+  );
+}
+
 SizedBox logOutButton(BuildContext context) {
   return SizedBox(
     child: InkWell(
@@ -263,6 +284,39 @@ SizedBox logOutButton(BuildContext context) {
         Icons.logout,
         color: kPrimaryColor,
       ),
+    ),
+  );
+}
+
+Widget bookingCard(Widget child) {
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 32),
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey,
+          blurRadius: 8,
+          offset: Offset(8, 8),
+        )
+      ],
+    ),
+    child: child,
+  );
+}
+
+Container serviceCard(String service) {
+  return Container(
+    margin: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+    decoration: const BoxDecoration(
+        color: kPrimaryLightColor,
+        borderRadius: BorderRadius.all(Radius.circular(30))),
+    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+    child: Text(
+      service,
+      style: const TextStyle(fontWeight: FontWeight.bold),
     ),
   );
 }

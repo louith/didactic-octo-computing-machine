@@ -1,5 +1,7 @@
 // ignore_for_file: camel_case_types, unnecessary_null_comparison
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_auth/Screens/HomeScreens/ClientPages/calendar_screen.dar
 import 'package:flutter_auth/Screens/HomeScreens/ClientPages/message_screen.dart';
 import 'package:flutter_auth/Screens/HomeScreens/ClientPages/profile_screen.dart';
 import 'package:flutter_auth/Screens/HomeScreens/ClientPages/services_screen.dart';
+import 'package:flutter_auth/Screens/HomeScreens/booking_history.dart';
 import 'package:flutter_auth/components/background.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -111,10 +114,14 @@ List<Widget> screens() {
 List<PersistentBottomNavBarItem> navBarItems() {
   return [
     PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
-        title: 'Home',
-        activeColorPrimary: kPrimaryColor,
-        inactiveColorPrimary: kPrimaryLightColor),
+      icon: const Icon(Icons.home),
+      title: 'Home',
+      activeColorPrimary: kPrimaryColor,
+      inactiveColorPrimary: kPrimaryLightColor,
+      routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: '/',
+          routes: {'/calendar': (context) => const CalendarPage()}),
+    ),
     PersistentBottomNavBarItem(
       icon: const Icon(Icons.calendar_month_outlined),
       title: 'Bookings',
@@ -126,18 +133,27 @@ List<PersistentBottomNavBarItem> navBarItems() {
       title: 'Services',
       activeColorPrimary: kPrimaryColor,
       inactiveColorPrimary: kPrimaryLightColor,
+      routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: '/',
+          routes: {'/calendar': (context) => const CalendarPage()}),
     ),
     PersistentBottomNavBarItem(
       icon: const Icon(Icons.message),
       title: 'Messages',
       activeColorPrimary: kPrimaryColor,
       inactiveColorPrimary: kPrimaryLightColor,
+      routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: '/',
+          routes: {'/calendar': (context) => const CalendarPage()}),
     ),
     PersistentBottomNavBarItem(
       icon: const Icon(Icons.person),
       title: 'Salon',
       activeColorPrimary: kPrimaryColor,
       inactiveColorPrimary: kPrimaryLightColor,
+      routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: '/',
+          routes: {'/calendar': (context) => const CalendarPage()}),
     ),
   ];
 }
@@ -149,38 +165,12 @@ class home extends StatefulWidget {
   State<home> createState() => _homeState();
 }
 
+final _firestore = FirebaseFirestore.instance;
+User? currentUser = FirebaseAuth.instance.currentUser;
+
 class _homeState extends State<home> {
-  String salonName = '';
-  final _firestore = FirebaseFirestore.instance;
-  User? currentUser = FirebaseAuth.instance.currentUser;
-
-  @override
-  void initState() {
-    getSalonName();
-    super.initState();
-  }
-
-  void getSalonName() {
-    _firestore
-        .collection('users')
-        .doc(currentUser!.uid)
-        .get()
-        .then(((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot != null) {
-        setState(() {
-          salonName = documentSnapshot.get('name');
-        });
-      }
-    }));
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<String> views = ['This Month', 'This Year', 'This Week'];
-    List<String> branches = ['Branch 1', 'Branch 2', 'Branch 3'];
-    String dropdownValue = views.first;
-    String dropdownBranch = branches.first;
-
     return SafeArea(
       child: Background(
         child: Container(
@@ -211,41 +201,83 @@ class _homeState extends State<home> {
                 ],
               ),
               const SizedBox(height: defaultPadding),
-              Row(
-                children: [
-                  Text(
-                    salonName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
+              FutureBuilder<List<Booking>>(
+                future: getBookingHistory(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return salonHomeCard(
+                      'Appointments History',
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          if (index == 2) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => BookingsHistory(
+                                    bookings: snapshot.data!,
+                                  ),
+                                ));
+                              },
+                              child: const Text(
+                                'View More',
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(snapshot.data![index].customerUsername),
+                                  Text(snapshot.data![index].status
+                                      .toUpperCase())
+                                ],
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
               const SizedBox(height: defaultPadding),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
-                    color: kPrimaryLightColor,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Appointments',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Staff',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Feedbacks',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+              FutureBuilder<List<Staff>>(
+                future: getStaffList(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return salonHomeCard(
+                        'Staff List Preview',
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            if (index == 2) {
+                              return const Text('. . .');
+                            } else {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(snapshot.data![index].name),
+                                  Text(snapshot.data![index].role),
+                                ],
+                              );
+                            }
+                          },
+                        ));
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
             ],
           ),
@@ -254,17 +286,138 @@ class _homeState extends State<home> {
     );
   }
 
-  Widget dashboardButton(IconData icon, Function() function, String text) {
-    return TextButton.icon(
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return function();
-          },
+  Future<List<Booking>> getBookingHistory() async {
+    try {
+      List<Booking> history = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection('bookings')
+          .get();
+      querySnapshot.docs.forEach((doc) {
+        // String? worker = doc['worker'];
+
+        history.add(Booking(
+          clientId: doc['clientId'],
+          clientUsername: doc['clientUsername'],
+          customerUsername: doc['customerUsername'],
+          dateFrom: doc['dateFrom'].toDate(),
+          dateTo: doc['dateTo'].toDate(),
+          location: doc['location'],
+          paymentMethod: doc['paymentMethod'],
+          reference: doc['reference'],
+          serviceFee: doc['serviceFee'],
+          services: doc['services'],
+          status: doc['status'],
+          totalAmount: doc['totalAmount'],
         ));
-      },
-      icon: Icon(icon),
-      label: Text(text),
-    );
+      });
+      return history;
+    } catch (e) {
+      log('error getting booking history $e');
+      return [];
+    }
   }
+
+  Future<List<Staff>> getStaffList() async {
+    try {
+      List<Staff> staffList = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection('staff')
+          .get();
+      querySnapshot.docs.forEach((element) {
+        staffList.add(Staff(
+          contactNum: element['contact'],
+          name: element['name'],
+          role: element['role'],
+        ));
+      });
+      return staffList;
+    } catch (e) {
+      log('error getting staff list');
+      return [];
+    }
+  }
+}
+
+class Booking {
+  String clientId;
+  String clientUsername;
+  String customerUsername;
+  DateTime dateFrom;
+  DateTime dateTo;
+  String location;
+  String paymentMethod;
+  String reference;
+  String serviceFee;
+  List<dynamic> services;
+  String status;
+  String totalAmount;
+  String? worker;
+
+  Booking({
+    required this.clientId,
+    required this.clientUsername,
+    required this.customerUsername,
+    required this.dateFrom,
+    required this.dateTo,
+    required this.location,
+    required this.paymentMethod,
+    required this.reference,
+    required this.serviceFee,
+    required this.services,
+    required this.status,
+    required this.totalAmount,
+    this.worker,
+  });
+}
+
+class Staff {
+  String contactNum;
+  String name;
+  String role;
+
+  Staff({
+    required this.contactNum,
+    required this.name,
+    required this.role,
+  });
+}
+
+class Client {
+  String address;
+  String? gender;
+  String? birthday;
+  String email;
+  String name;
+  String? primaryPhoneNum;
+  String? secondaryPhoneNum;
+  String? representativeNum;
+  String role;
+  double rating;
+  String profilePicutre;
+  String? username;
+  String? salonNumber;
+  String? salonOwner;
+  String? salonRepresentative;
+
+  Client({
+    required this.address,
+    this.gender,
+    this.birthday,
+    required this.email,
+    required this.name,
+    this.primaryPhoneNum,
+    this.secondaryPhoneNum,
+    required this.role,
+    required this.rating,
+    required this.profilePicutre,
+    this.username,
+    this.salonNumber,
+    this.salonOwner,
+    this.salonRepresentative,
+    this.representativeNum,
+  });
 }

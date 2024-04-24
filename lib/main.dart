@@ -1,8 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_auth/Screens/HomeScreens/ClientPages/calendar_screen.dart';
+import 'package:flutter_auth/Screens/HomeScreens/ClientPages/salon_screen.dart';
+import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
 import 'package:flutter_auth/constants.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +50,13 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 borderSide: BorderSide.none),
           )),
+      navigatorKey: navigatorKey,
       home: const WelcomeScreen(),
+      routes: {
+        '/calendar_screen': (context) => const CalendarPage(),
+        '/home_screen': (context) => const home(),
+        '/login_screen': (context) => const LoginScreen(),
+      },
     );
   }
 }
