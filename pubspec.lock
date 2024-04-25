@@ -246,34 +246,33 @@ packages:
     description:
       name: firebase_core_web
       sha256: "67f2fcc600fc78c2f731c370a3a5e6c87ee862e3a2fba6f951eca6d5dafe5c29"
-      sha256: c8b02226e548f35aace298e2bb2e6c24e34e8a203d614e742bb1146e5a4ad3c8
       url: "https://pub.dev"
     source: hosted
-    version: "2.15.0"
+    version: "2.16.0"
   firebase_messaging:
     dependency: "direct main"
     description:
       name: firebase_messaging
-      sha256: "87e3eda0ecdfeadb5fd1cf0dc5153aea5307a0cfca751c4b1ac97bfdd805660e"
+      sha256: d8b12bcfe535f9bf8e24b4f9685036a8614f11b6fdcdff54ce9758ea8585a8a9
       url: "https://pub.dev"
     source: hosted
-    version: "14.8.1"
+    version: "14.9.0"
   firebase_messaging_platform_interface:
     dependency: transitive
     description:
       name: firebase_messaging_platform_interface
-      sha256: "80b4ccf20066b0579ebc88d4678230a5f53ab282fe040e31671af745db1588f9"
+      sha256: "8355f089bfc06691f00e0bc01c4214bc0aeff22acabdb5090b734a551d33ca43"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.31"
+    version: "4.5.33"
   firebase_messaging_web:
     dependency: transitive
     description:
       name: firebase_messaging_web
-      sha256: "9224aa4db1ce6f08d96a82978453d37e9980204a20e410a11d9b774b24c6841c"
+      sha256: d6f3ea91e0aae479a09355af91e65b19cfbc485d596c5448a87356af4923e582
       url: "https://pub.dev"
     source: hosted
-    version: "2.16.0"
+    version: "3.8.3"
   firebase_storage:
     dependency: "direct main"
     description:
