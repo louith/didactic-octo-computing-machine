@@ -56,23 +56,28 @@ class _SalonIDsState extends State<SalonIDs> {
       final businessPermitUrl = docSnapshot.get('businessPermit') as String;
       final secondLicenseUrl = docSnapshot.get('secondaryLicense') as String;
 
-      //Efficiently download URLs in parallel (if applicable)
       final futures = [
-        outsideSalonUrl.isNotEmpty
-            ? storage.refFromURL(outsideSalonUrl).getDownloadURL()
-            : Future.value(""),
-        insideSalonUrl.isNotEmpty
-            ? storage.refFromURL(insideSalonUrl).getDownloadURL()
-            : Future.value(""),
-        businessPermitUrl.isNotEmpty
-            ? storage.refFromURL(businessPermitUrl).getDownloadURL()
-            : Future.value(""),
-        secondLicenseUrl.isNotEmpty
-            ? storage.refFromURL(secondLicenseUrl).getDownloadURL()
-            : Future.value(""),
+        outsideSalonUrl,
+        insideSalonUrl,
+        businessPermitUrl,
+        secondLicenseUrl
       ];
+      // Efficiently download URLs in parallel (if applicable)
+      // outsideSalonUrl.isNotEmpty
+      // ? storage.refFromURL(outsideSalonUrl).getDownloadURL()
+      // : Future.value(""),
+      // insideSalonUrl.isNotEmpty
+      // ? storage.refFromURL(insideSalonUrl).getDownloadURL()
+      // : Future.value(""),
+      // businessPermitUrl.isNotEmpty
+      // ? storage.refFromURL(businessPermitUrl).getDownloadURL()
+      // : Future.value(""),
+      // secondLicenseUrl.isNotEmpty
+      // ? storage.refFromURL(secondLicenseUrl).getDownloadURL()
+      // : Future.value(""),
+      // ];
 
-      downloadUrls.addAll(await Future.wait(futures));
+      downloadUrls.addAll(futures);
 
       // if (outsideSalonUrl.isNotEmpty) {
       // downloadUrls
@@ -80,7 +85,7 @@ class _SalonIDsState extends State<SalonIDs> {
       // } else {
       // downloadUrls.add('');
       // }
-
+      print(downloadUrls);
       return SalonDocs(
           outsideSalonUrl: downloadUrls[0],
           insideSalonUrl: downloadUrls[1],
@@ -118,32 +123,32 @@ class _SalonIDsState extends State<SalonIDs> {
                 Image.network(
                   salonDocs.outsideSalonUrl,
                   fit: BoxFit.cover,
-                  loadingBuilder: ((context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return const Icon(Icons.check);
-                    } else {
-                      return const Center(
-                          child:
-                              CircularProgressIndicator(color: kPrimaryColor));
-                    }
-                  }),
-                  errorBuilder: ((context, error, stackTrace) =>
-                      const Icon(Icons.error)),
+                  // loadingBuilder: ((context, child, loadingProgress) {
+                  // if (loadingProgress == null) {
+                  // return const Icon(Icons.check);
+                  // } else {
+                  // return const Center(
+                  // child:
+                  // CircularProgressIndicator(color: kPrimaryColor));
+                  // }
+                  // }),
+                  // errorBuilder: ((context, error, stackTrace) =>
+                  // const Icon(Icons.error)),
                 ),
                 Image.network(
                   salonDocs.insideSalonUrl,
                   fit: BoxFit.cover,
-                  loadingBuilder: ((context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return const Icon(Icons.check);
-                    } else {
-                      return const Center(
-                          child:
-                              CircularProgressIndicator(color: kPrimaryColor));
-                    }
-                  }),
-                  errorBuilder: ((context, error, stackTrace) =>
-                      const Icon(Icons.error)),
+                  // loadingBuilder: ((context, child, loadingProgress) {
+                  // if (loadingProgress == null) {
+                  // return const Icon(Icons.check);
+                  // } else {
+                  // return const Center(
+                  // child:
+                  // CircularProgressIndicator(color: kPrimaryColor));
+                  // }
+                  // }),
+                  // errorBuilder: ((context, error, stackTrace) =>
+                  // const Icon(Icons.error)),
                 ),
                 // adminHeading('Legal Documents'),
                 Image.network(
