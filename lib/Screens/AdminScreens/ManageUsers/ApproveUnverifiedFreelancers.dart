@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_auth/Screens/AdminScreens/ManageUsers/IDs/FreelancerIDs.dart';
+import 'package:flutter_auth/Screens/AdminScreens/ManageUsers/IDs/Portfolio.dart';
+import 'package:flutter_auth/Screens/AdminScreens/ManageUsers/IDs/SalonIDs.dart';
 import 'package:flutter_auth/Screens/AdminScreens/ManageUsers/InfoTabs/FreelancerBasicInfo.dart';
 import 'package:flutter_auth/Screens/AdminScreens/ManageUsers/ServicesOffered/GetClientServices.dart';
 import 'package:flutter_auth/constants.dart';
@@ -110,12 +113,10 @@ class _UnverifiedInfoFreelancersState extends State<UnverifiedInfoFreelancers> {
             currentID: widget.currentID,
             role: widget.role,
           ),
-          Center(
-            child: Text('Documents'),
+          FreelancerDocs(
+            currentID: widget.currentID,
           ),
-          Center(
-            child: Text('Portfolio'),
-          ),
+          FreelancerPortfolio(currentID: widget.currentID),
           GetClientServices(
             currentID: widget.currentID,
             role: widget.role,

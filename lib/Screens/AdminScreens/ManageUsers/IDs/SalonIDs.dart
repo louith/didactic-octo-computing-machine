@@ -61,29 +61,8 @@ class _SalonIDsState extends State<SalonIDs> {
         businessPermitUrl,
         secondLicenseUrl
       ];
-      // Efficiently download URLs in parallel (if applicable)
-      // outsideSalonUrl.isNotEmpty
-      // ? storage.refFromURL(outsideSalonUrl).getDownloadURL()
-      // : Future.value(""),
-      // insideSalonUrl.isNotEmpty
-      // ? storage.refFromURL(insideSalonUrl).getDownloadURL()
-      // : Future.value(""),
-      // businessPermitUrl.isNotEmpty
-      // ? storage.refFromURL(businessPermitUrl).getDownloadURL()
-      // : Future.value(""),
-      // secondLicenseUrl.isNotEmpty
-      // ? storage.refFromURL(secondLicenseUrl).getDownloadURL()
-      // : Future.value(""),
-      // ];
 
       downloadUrls.addAll(futures);
-
-      // if (outsideSalonUrl.isNotEmpty) {
-      // downloadUrls
-      // .add(await storage.refFromURL(outsideSalonUrl).getDownloadURL());
-      // } else {
-      // downloadUrls.add('');
-      // }
       print(downloadUrls);
       return SalonDocs(
           outsideSalonUrl: downloadUrls[0],
@@ -113,100 +92,95 @@ class _SalonIDsState extends State<SalonIDs> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final salonDocs = snapshot.data!;
-            return GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              children: [
-                // adminHeading('Salon Images'),
-                Image.network(
-                  salonDocs.outsideSalonUrl,
-                  fit: BoxFit.cover,
-                  // loadingBuilder: ((context, child, loadingProgress) {
-                  // if (loadingProgress == null) {
-                  // return const Icon(Icons.check);
-                  // } else {
-                  // return const Center(
-                  // child:
-                  // CircularProgressIndicator(color: kPrimaryColor));
-                  // }
-                  // }),
-                  // errorBuilder: ((context, error, stackTrace) =>
-                  // const Icon(Icons.error)),
-                ),
-                Image.network(
-                  salonDocs.insideSalonUrl,
-                  fit: BoxFit.cover,
-                  // loadingBuilder: ((context, child, loadingProgress) {
-                  // if (loadingProgress == null) {
-                  // return const Icon(Icons.check);
-                  // } else {
-                  // return const Center(
-                  // child:
-                  // CircularProgressIndicator(color: kPrimaryColor));
-                  // }
-                  // }),
-                  // errorBuilder: ((context, error, stackTrace) =>
-                  // const Icon(Icons.error)),
-                ),
-                // adminHeading('Legal Documents'),
-                Image.network(
-                  salonDocs.businessPermitUrl,
-                  fit: BoxFit.cover,
-                  loadingBuilder: ((context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return const Icon(Icons.check);
-                    } else {
-                      return const Center(
-                          child:
-                              CircularProgressIndicator(color: kPrimaryColor));
-                    }
-                  }),
-                  errorBuilder: ((context, error, stackTrace) =>
-                      const Icon(Icons.error)),
-                ),
-                Image.network(
-                  salonDocs.secondLicenseUrl,
-                  fit: BoxFit.cover,
-                  loadingBuilder: ((context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return const Icon(Icons.check);
-                    } else {
-                      return const Center(
-                          child:
-                              CircularProgressIndicator(color: kPrimaryColor));
-                    }
-                  }),
-                  errorBuilder: ((context, error, stackTrace) =>
-                      const Icon(Icons.error)),
-                ),
-              ],
-            );
-            // return Expanded(
-            // child: Container(
-            // padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
-            // child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.start,
+            // return GridView.count(
+            // crossAxisCount: 2,
+            // crossAxisSpacing: 10,
+            // mainAxisSpacing: 10,
             // children: [
-            // SizedBox(
-            // height: 40,
-            // ),
             // adminHeading('Salon Images'),
-            // SizedBox(
-            // height: 20,
+            // Image.network(
+            // salonDocs.outsideSalonUrl,
+            // fit: BoxFit.cover,
             // ),
-            // Row(
-            // children: [
-            // Image.network(salonDoc.insideSalonUrl)
-            // Expanded(
-            // child: adminImageContainer(
-            // 'Inside Picture', salonDoc.insideSalonUrl))
-            // ],
-            // )
-            // ],
+            // Image.network(
+            // salonDocs.insideSalonUrl,
+            // fit: BoxFit.cover,
             // ),
-            // ));
+            // adminHeading('Legal Documents'),
+            // Image.network(
+            // salonDocs.businessPermitUrl,
+            // fit: BoxFit.cover,
+            // ),
+            // Image.network(
+            // salonDocs.secondLicenseUrl,
+            // fit: BoxFit.cover,
+            // ),
+            // ],
+            // );
+            return SingleChildScrollView(
+              child: Expanded(
+                  child: Container(
+                padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 40,
+                    ),
+                    adminHeading('Salon Images (inside & outside)'),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Image.network(
+                          salonDocs.insideSalonUrl,
+                          fit: BoxFit.cover,
+                          height: 400,
+                          width: 550,
+                        ),
+                        SizedBox(
+                          width: 25,
+                        ),
+                        Image.network(
+                          salonDocs.outsideSalonUrl,
+                          fit: BoxFit.cover,
+                          height: 400,
+                          width: 550,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    adminHeading('Legal Documents'),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Image.network(
+                          salonDocs.businessPermitUrl,
+                          fit: BoxFit.cover,
+                          height: 400,
+                          width: 550,
+                        ),
+                        SizedBox(
+                          width: 25,
+                        ),
+                        Image.network(
+                          salonDocs.secondLicenseUrl,
+                          fit: BoxFit.cover,
+                          height: 400,
+                          width: 550,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )),
+            );
           }
         });
   }

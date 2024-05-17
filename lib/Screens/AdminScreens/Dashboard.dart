@@ -77,7 +77,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
     final verSalonsCount = verSalons.docs.length;
 
-    List<String> amount = [];
+    List<num> amount = [];
     QuerySnapshot earnings =
         await db.collection('users').doc(adminID).collection('earnings').get();
 
@@ -85,7 +85,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       amount.add(a['serviceFee']);
     });
 
-    String totalAmount = amount.reduce((a, b) => a + b);
+    String totalAmount = amount.reduce((a, b) => a + b).toStringAsFixed(2);
 
     return DashboardValues(
       verifiedSalons: verSalonsCount.toString(),
